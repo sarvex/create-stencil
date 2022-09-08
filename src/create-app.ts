@@ -140,6 +140,7 @@ export function changeDir(moveTo: string): boolean {
   }
   return wasSuccess;
 }
+
 export function initGit(): boolean {
   let wasSuccess = false;
   try {
@@ -147,7 +148,10 @@ export function initGit(): boolean {
     // also returns a non-zero exit code if it times out
     execSync('git --version', { stdio: 'ignore' });
 
-    // TODO(NOW): we may be in a subtree, which may not be desirable?
+    // we may be in a subtree, which may not be desirable
+    // this should fail if we go all the way up the tree and can't find anything
+    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    // TODO(): If we're in a work tree, we don't want to create a new .git dir - need to think through the logic to leave
 
     // git must exist on the path, initialize a repo
     // init can fail for reasons like a malformed git config, permissions, etc.
