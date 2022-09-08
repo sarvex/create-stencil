@@ -36,12 +36,21 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
   loading.stop(true);
 
   const time = printDuration(Date.now() - startT);
+
+  let completionText = `${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
+  
+  ${dim('We suggest that you begin by typing:')}
+  
+  `;
+
   let hasErr = false;
   if (!changeDir(projectName)) {
     hasErr = hasErr || true; // I know, weird
+    completionText += `${dim(terminalPrompt())} ${green('cd')} ${projectName}`;
   }
 
-  if (!initGit()) {
+  if (hasErr || (!inExistingGitTree() && !initGit())) {
+    //there was no existing git tree, and we failed to create a new repo in the project dir
     hasErr = hasErr || true;
   }
 
@@ -51,11 +60,7 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
     hasErr = hasErr || true;
   }
 
-  console.log(`${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
-
-
-  ${dim(terminalPrompt())} ${green('cd')} ${projectName}
-  ${dim(terminalPrompt())} ${green('npm install')}
+  completionText += `${dim(terminalPrompt())} ${green('npm install')}
   ${dim(terminalPrompt())} ${green('npm start')}
 
   ${dim('You may find the following commands will be helpful:')}
@@ -72,8 +77,11 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
 ${renderDocs(starter)}
 
   Happy coding! 🎈
-`);
+`;
 
+  // TODO() Test this
+  console.log(completionText);
+  // TODO() Does this work
   if (autoRun) {
     await npm('start', projectName, 'inherit');
   }
@@ -141,17 +149,25 @@ export function changeDir(moveTo: string): boolean {
   return wasSuccess;
 }
 
+export function inExistingGitTree(): boolean {
+  let isInTree = false;
+  try {
+    // we may be in a subtree, which may not be desirable
+    // this should fail if we go all the way up the tree and can't find anything
+    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    isInTree = true;
+  } catch (err: unknown) {
+    console.log(err);
+  }
+  return isInTree;
+}
+
 export function initGit(): boolean {
   let wasSuccess = false;
   try {
     // if `git` is not on the user's path, this will return a non-zero exit code
     // also returns a non-zero exit code if it times out
     execSync('git --version', { stdio: 'ignore' });
-
-    // we may be in a subtree, which may not be desirable
-    // this should fail if we go all the way up the tree and can't find anything
-    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
-    // TODO(): If we're in a work tree, we don't want to create a new .git dir - need to think through the logic to leave
 
     // git must exist on the path, initialize a repo
     // init can fail for reasons like a malformed git config, permissions, etc.
@@ -161,6 +177,7 @@ export function initGit(): boolean {
   } catch (err: unknown) {
     console.error(err);
   }
+
   return wasSuccess;
 }
 
