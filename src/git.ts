@@ -73,6 +73,7 @@ export function commitGit(): boolean {
     // add all files (including dotfiles)
     execSync('git add -A', { stdio: 'ignore' });
     // commit them
+    console.log(`git commit -m "init with create-stencil v${getPkgVersion()}"`);
     execSync(`git commit -m "init with create-stencil v${getPkgVersion()}"`, { stdio: 'ignore' });
     wasSuccess = true;
   } catch (err: unknown) {
