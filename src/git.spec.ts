@@ -124,7 +124,6 @@ describe('git', () => {
         switch (cmd) {
           case 'git add -A':
             return Buffer.alloc(0);
-          // TODO MOCK THIS
           case `git commit -m "init with create-stencil v${MOCK_PKG_JSON_VERSION}"`:
             return Buffer.alloc(0);
           default:
@@ -147,7 +146,6 @@ describe('git', () => {
           switch (cmd) {
             case 'git add -A':
               throw new Error('git add has failed for some reason');
-            // TODO MOCK THIS
             case `git commit -m "init with create-stencil v${MOCK_PKG_JSON_VERSION}"`:
               throw new Error('git commit should not have been reached!');
             default:
@@ -174,7 +172,6 @@ describe('git', () => {
           switch (cmd) {
             case 'git add -A':
               return Buffer.alloc(0);
-            // TODO MOCK THIS
             case `git commit -m "init with create-stencil v${MOCK_PKG_JSON_VERSION}"`:
               throw new Error('git commit has failed for some reason');
             default:
