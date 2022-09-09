@@ -39,18 +39,18 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
 
   let hasErr = false;
   if (!changeDir(projectName)) {
-    hasErr = hasErr || true; // I know, weird
+    hasErr ||= true;
   }
 
-  if (hasErr || (!inExistingGitTree() && !initGit())) {
+  if (!hasErr && !inExistingGitTree() && !initGit()) {
     //there was no existing git tree, and we failed to create a new repo in the project dir
-    hasErr = hasErr || true;
+    hasErr ||= true;
   }
 
   // TODO() we init git, do we clean up if we failed?
 
   if (!commitGit()) {
-    hasErr = hasErr || true;
+    hasErr ||= true;
   }
 
   console.log(`${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
