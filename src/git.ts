@@ -27,7 +27,7 @@ export function inExistingGitTree(): boolean {
   } catch (_err: unknown) {
     console.info(
       `${yellow(
-        'create-stencil has detected you are not inside of an existing git repository, one will be created in the root of tyour project'
+        'create-stencil has detected you are not inside of an existing git repository, one will be created in the root of your project'
       )}`
     );
   }
