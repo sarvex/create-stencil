@@ -2,8 +2,6 @@ import { execSync } from 'child_process';
 import { yellow } from 'colorette';
 import { getPkgVersion } from './version';
 
-// TODO(NOW): Write tests for all of this
-
 /**
  * Check whether the current process is in a git work tree.
  *
