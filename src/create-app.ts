@@ -1,7 +1,7 @@
 import { Spinner } from 'cli-spinner';
 import fs from 'fs';
 import { join } from 'path';
-import { bold, cyan, dim, green } from 'colorette';
+import { bold, cyan, dim, green, yellow } from 'colorette';
 import { downloadStarter } from './download';
 import { Starter } from './starters';
 import { unZipBuffer } from './unzip';
@@ -37,16 +37,9 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
 
   const time = printDuration(Date.now() - startT);
 
-  let completionText = `${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
-  
-  ${dim('We suggest that you begin by typing:')}
-  
-  `;
-
   let hasErr = false;
   if (!changeDir(projectName)) {
     hasErr = hasErr || true; // I know, weird
-    completionText += `${dim(terminalPrompt())} ${green('cd')} ${projectName}`;
   }
 
   if (hasErr || (!inExistingGitTree() && !initGit())) {
@@ -60,7 +53,12 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
     hasErr = hasErr || true;
   }
 
-  completionText += `${dim(terminalPrompt())} ${green('npm install')}
+  console.log(`${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
+  
+  ${dim('We suggest that you begin by typing:')}
+  
+  ${dim(terminalPrompt())} ${green('cd')} ${projectName}
+  ${dim(terminalPrompt())} ${green('npm install')}
   ${dim(terminalPrompt())} ${green('npm start')}
 
   ${dim('You may find the following commands will be helpful:')}
@@ -77,10 +75,7 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
 ${renderDocs(starter)}
 
   Happy coding! 🎈
-`;
-
-  // TODO() Test this
-  console.log(completionText);
+`);
   // TODO() Does this work
   if (autoRun) {
     await npm('start', projectName, 'inherit');
@@ -155,9 +150,10 @@ export function inExistingGitTree(): boolean {
     // we may be in a subtree, which may not be desirable
     // this should fail if we go all the way up the tree and can't find anything
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    console.info(`${yellow('Detected you are inside of a work tree. A git directory will not be created')}`);
     isInTree = true;
-  } catch (err: unknown) {
-    console.log(err);
+  } catch (_err: unknown) {
+    console.info(`${yellow('Detected you are not inside of a work tree. A git directory will be created')}`);
   }
   return isInTree;
 }
