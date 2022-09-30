@@ -19,7 +19,7 @@ export function inExistingGitTree(): boolean {
     // find a git repo)
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
     console.info(
-      `${yellow('create-stencil has detected you are inside of an existing git repository, one will not be created')}`
+      `${yellow('create-stencil has detected you are inside of an existing git repository, a new one will not be created')}`
     );
     isInTree = true;
   } catch (_err: unknown) {
@@ -73,7 +73,6 @@ export function commitGit(): boolean {
     // add all files (including dotfiles)
     execSync('git add -A', { stdio: 'ignore' });
     // commit them
-    console.log(`git commit -m "init with create-stencil v${getPkgVersion()}"`);
     execSync(`git commit -m "init with create-stencil v${getPkgVersion()}"`, { stdio: 'ignore' });
     wasSuccess = true;
   } catch (err: unknown) {
