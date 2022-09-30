@@ -75,7 +75,7 @@ ${renderDocs(starter)}
 
   Happy coding! 🎈
 `);
-  // TODO() Does this work
+
   if (autoRun) {
     await npm('start', projectName, 'inherit');
   }
