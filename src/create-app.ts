@@ -48,8 +48,13 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
 
   // TODO() we init git, do we clean up if we failed?
 
-  if (!commitGit()) {
+  if (!hasErr && !commitGit()) {
     hasErr ||= true;
+  }
+
+  if (hasErr) {
+    // TODO
+    console.error()
   }
 
   console.log(`${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
