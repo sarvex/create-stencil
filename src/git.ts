@@ -19,7 +19,9 @@ export function inExistingGitTree(): boolean {
     // find a git repo)
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
     console.info(
-      `${yellow('create-stencil has detected you are inside of an existing git repository, a new one will not be created')}`
+      `${yellow(
+        'create-stencil has detected you are inside of an existing git repository, a new one will not be created'
+      )}`
     );
     isInTree = true;
   } catch (_err: unknown) {

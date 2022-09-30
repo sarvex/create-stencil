@@ -54,7 +54,7 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
 
   if (hasErr) {
     // TODO
-    console.error()
+    console.error();
   }
 
   console.log(`${green('✔')} ${bold('All setup')} ${onlyUnix('🎉')} ${dim(time)}
