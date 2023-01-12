@@ -14,7 +14,7 @@ import { getPkgVersion } from './version';
 export function inExistingGitTree(): boolean {
   let isInTree = false;
   try {
-    // we may be in a subtree of an existing git repository (e.g. a monorepo), this call performs that check
+    // we may be in a subtree of an existing git repository (e.g. a monorepo), this call performs that check.
     // this call is expected fail if we are _not_ in an existing repo (I.E we go all the way up the dir tree and can't
     // find a git repo)
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
@@ -68,7 +68,7 @@ export function initGit(): boolean {
  *
  * @returns true if the files are committed successfully, false otherwise
  */
-export function commitGit(): boolean {
+export function commitAllFiles(): boolean {
   let wasSuccess = false;
   try {
     // TODO(NOW): Cases where these fail

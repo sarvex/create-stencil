@@ -7,9 +7,28 @@ import { Starter } from './starters';
 import { unZipBuffer } from './unzip';
 import { npm, onlyUnix, printDuration, setTmpDirectory, terminalPrompt } from './utils';
 import { replaceInFile } from 'replace-in-file';
-import { commitGit, inExistingGitTree, initGit } from './git';
+import { commitAllFiles, inExistingGitTree, initGit } from './git';
 
 const starterCache = new Map<Starter, Promise<undefined | ((name: string) => Promise<void>)>>();
+
+function initGitForStarter(projectName: string) {
+  let hasErr = false;
+  if (!changeDir(projectName)) {
+    hasErr ||= true;
+  }
+
+  if (!hasErr && !inExistingGitTree() && !initGit()) {
+    //there was no existing git tree, and we failed to create a new repo in the project dir
+    hasErr ||= true;
+  }
+
+  // TODO() we init git, do we clean up if we failed?
+
+  if (!hasErr && !commitAllFiles()) {
+    hasErr ||= true;
+  }
+  return hasErr;
+}
 
 export async function createApp(starter: Starter, projectName: string, autoRun: boolean) {
   if (fs.existsSync(projectName)) {
@@ -35,22 +54,7 @@ export async function createApp(starter: Starter, projectName: string, autoRun: 
   loading.stop(true);
 
   const time = printDuration(Date.now() - startT);
-
-  let hasErr = false;
-  if (!changeDir(projectName)) {
-    hasErr ||= true;
-  }
-
-  if (!hasErr && !inExistingGitTree() && !initGit()) {
-    //there was no existing git tree, and we failed to create a new repo in the project dir
-    hasErr ||= true;
-  }
-
-  // TODO() we init git, do we clean up if we failed?
-
-  if (!hasErr && !commitGit()) {
-    hasErr ||= true;
-  }
+  let hasErr = initGitForStarter(projectName);
 
   if (hasErr) {
     // TODO

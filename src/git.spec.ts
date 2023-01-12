@@ -1,5 +1,5 @@
 import * as cp from 'child_process';
-import { commitGit, inExistingGitTree, initGit } from './git';
+import { commitAllFiles, inExistingGitTree, initGit } from './git';
 import * as Version from './version';
 
 // TODO(NOW): Handle console statements
@@ -137,7 +137,7 @@ describe('git', () => {
     });
 
     it('returns true when files are committed', () => {
-      expect(commitGit()).toBe(true);
+      expect(commitAllFiles()).toBe(true);
     });
 
     describe('git add fails', () => {
@@ -155,11 +155,11 @@ describe('git', () => {
       });
 
       it('returns false ', () => {
-        expect(commitGit()).toBe(false);
+        expect(commitAllFiles()).toBe(false);
       });
 
       it('does not attempt to commit files', () => {
-        commitGit();
+        commitAllFiles();
 
         expect(execSyncSpy).toHaveBeenCalledTimes(1);
         expect(execSyncSpy).toHaveBeenCalledWith('git add -A', { stdio: 'ignore' });
@@ -181,7 +181,7 @@ describe('git', () => {
       });
 
       it('returns false ', () => {
-        expect(commitGit()).toBe(false);
+        expect(commitAllFiles()).toBe(false);
       });
     });
   });
