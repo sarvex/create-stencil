@@ -11,23 +11,29 @@ import { commitAllFiles, inExistingGitTree, initGit } from './git';
 
 const starterCache = new Map<Starter, Promise<undefined | ((name: string) => Promise<void>)>>();
 
-function initGitForStarter(projectName: string) {
-  let hasErr = false;
+function initGitForStarter(projectName: string): boolean {
   if (!changeDir(projectName)) {
-    hasErr ||= true;
+    return false;
   }
 
-  if (!hasErr && !inExistingGitTree() && !initGit()) {
-    //there was no existing git tree, and we failed to create a new repo in the project dir
-    hasErr ||= true;
+  if (inExistingGitTree()) {
+    return true;
   }
 
-  // TODO() we init git, do we clean up if we failed?
-
-  if (!hasErr && !commitAllFiles()) {
-    hasErr ||= true;
+  const gitInitFailed = initGit();
+  if (gitInitFailed) {
+    const cleanUpGit = () => {
+      // TODO() we init git, do we clean up if we failed?
+      console.warn("Cleaning up git....");
+    };
+    cleanUpGit();
+    return false;
   }
-  return hasErr;
+
+  if (!commitAllFiles()) {
+    return false;
+  }
+  return true;
 }
 
 export async function createApp(starter: Starter, projectName: string, autoRun: boolean) {
