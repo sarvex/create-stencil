@@ -24,7 +24,7 @@ function initGitForStarter(projectName: string): boolean {
   if (gitInitFailed) {
     const cleanUpGit = () => {
       // TODO() we init git, do we clean up if we failed?
-      console.warn("Cleaning up git....");
+      console.warn('Cleaning up git....');
     };
     cleanUpGit();
     return false;
